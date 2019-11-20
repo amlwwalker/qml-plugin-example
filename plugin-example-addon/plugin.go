@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	_ "github.com/amlwwalker/example-qml/plugin-example-addon/settings"
+	_ "github.com/amlwwalker/qml-plugin-example/plugin-example-addon/settings"
 
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/qml"
@@ -12,12 +12,12 @@ import (
 	"github.com/therecipe/qt/widgets"
 )
 
-//go:generate qtminimal
-//go:generate go build -tags=minimal -buildmode=plugin -o plugin.so
-
+//this function is not needed, but it's still usefull for testing
 func Init() {
+	widgets.NewQApplication(len(os.Args), os.Args)
 
 	var view = quick.NewQQuickView(nil)
+	view.Engine().AddImportPath("qrc:/qml")
 	view.SetResizeMode(quick.QQuickView__SizeRootObjectToView)
 	var mainComponent = qml.NewQQmlComponent2(view.Engine(), nil)
 	mainComponent.ConnectStatusChanged(func(status qml.QQmlComponent__Status) {
@@ -35,34 +35,18 @@ func Init() {
 		}
 	})
 
-	var qmlString = `
+	qmlString := `
 import QtQuick 2.0
-import QtQuick.Controls 2.0
-Import Settings 1.0
+import Settings 1.0
 
-Item {
-  anchors.fill: parent //fill the view.ContentItem
-  id: rootItem
-
-  Button {
-    text: "Button"
-
-    anchors {
-      top: parent.top
-      left: parent.left
-      right: parent.right
-    }
-
-    onClicked: Qt.createQmlObject('import QtQuick 2.0; Rectangle {color: "blue"; anchors {left: rootItem.left; right: rootItem.right; bottom: rootItem.bottom} height: 50}', rootItem, "dynamicSnippet1");
-  }
+Settings {
+	anchors.fill: parent
 }
 `
 
 	mainComponent.SetData(core.NewQByteArray2(qmlString, -1), core.NewQUrl())
 
-	widgets.NewQApplication(len(os.Args), os.Args)
-
-	widgets.NewQPushButton2("HELLO", nil).Show()
+	view.Show()
 
 	widgets.QApplication_Exec()
 }

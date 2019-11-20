@@ -10,9 +10,14 @@ import (
 	"github.com/therecipe/qt/widgets"
 )
 
-//go:generate go generate ./plugin-example-addon
+//go:generate cp main.go ./plugin-example-addon
+//go:generate qtrcc desktop ./plugin-example-addon
+//go:generate qtmoc desktop ./plugin-example-addon
+//go:generate qtminimal desktop ./plugin-example-addon
+//go:generate go build -tags=minimal -buildmode=plugin -o ./plugin-example-addon/plugin.so ./plugin-example-addon
+//go:generate rm ./plugin-example-addon/main.go
+
 //go:generate qtmoc
-//go:generate qtminimal
 //go:generate go build -tags=minimal
 
 type Controller struct {
@@ -35,18 +40,22 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	f, err := p.Lookup("Init")
-	if err != nil {
-		panic(err)
+	if false { //this could be used to test the plugin, but it's not needed to call any initialization for the plugin to work with your app
+		f, err := p.Lookup("Init")
+		if err != nil {
+			panic(err)
+		}
+		f.(func())()
+		return
 	}
-	f.(func())()
+
+	core.QCoreApplication_SetAttribute(core.Qt__AA_EnableHighDpiScaling, true)
 	qApp := widgets.NewQApplication(len(os.Args), os.Args)
 	Instance()
 	Instance().qApp = qApp
 
-	core.QCoreApplication_SetAttribute(core.Qt__AA_EnableHighDpiScaling, true)
-
 	app := qml.NewQQmlApplicationEngine(nil)
+	app.AddImportPath("qrc:/qml")
 	app.Load(core.NewQUrl3("./qml/main.qml", 0))
 	widgets.QApplication_Exec()
 }

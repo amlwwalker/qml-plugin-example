@@ -5,6 +5,7 @@ import QtQuick 2.2
 
 import "." as Custom               //needed for name clash with std Controls
 
+import Settings 1.0
 
 ApplicationWindow {
   id: app
@@ -25,6 +26,9 @@ ApplicationWindow {
           text: qsTr("Calendar")
       }
       TabButton {
+          text: qsTr("Listing")
+      }
+      TabButton {
           text: qsTr("Settings")
       }
     }
@@ -40,6 +44,7 @@ ApplicationWindow {
             id: calendar 
             width: parent.width
             height: parent.height
+            color: "red"
           }
       }
       Item {
@@ -48,7 +53,16 @@ ApplicationWindow {
             id: listing
             width: parent.width
             height: parent.height
+            color: "green"
           }
+      }
+      Item {
+        id: settingsTab
+        Settings {
+          id: settings
+          width: parent.width
+          height: parent.height
+        }
       }
     }
   }

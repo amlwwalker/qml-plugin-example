@@ -6,7 +6,7 @@ import Theme 1.0
 T.Button {
     id: control
 
-    font: Theme.font
+    //font: Theme.font
 
     implicitWidth: Math.max(background ? background.implicitWidth : 0,
                                          contentItem.implicitWidth + leftPadding + rightPadding)
