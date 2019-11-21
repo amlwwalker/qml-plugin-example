@@ -1,11 +1,14 @@
 package settings
 
 import (
+	"fmt"
+
 	"github.com/therecipe/qt/quick"
 )
 
 func init() {
 	settingsController_QmlRegisterType2("Settings", 1, 0, "SettingsController")
+	fmt.Println("settings has initialised")
 }
 
 type settingsController struct {
