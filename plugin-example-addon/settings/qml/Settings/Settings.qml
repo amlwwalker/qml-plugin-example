@@ -68,11 +68,11 @@ SettingsController {
                       width: 500
                       Layout.fillWidth: true
                   }
-                  T.Button {
-                      text: "Update Convention"
-                      Layout.fillWidth: true
-                      anchors.right: versioningLayout.right
-                  }
+                  // T.Button {
+                  //     text: "Update Convention"
+                  //     Layout.fillWidth: true
+                  //     anchors.right: versioningLayout.right
+                  // }
               }
               }
           }

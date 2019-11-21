@@ -43,7 +43,7 @@ func main() {
 		panic(err)
 	}
 	fmt.Printf("p %+v\r\n", p)
-	if false { //this could be used to test the plugin, but it's not needed to call any initialization for the plugin to work with your app
+	if true { //this could be used to test the plugin, but it's not needed to call any initialization for the plugin to work with your app
 		f, err := p.Lookup("Init")
 		if err != nil {
 			panic(err)
@@ -59,44 +59,56 @@ func main() {
 	app.Load(core.NewQUrl3("./qml/main.qml", 0))
 
 	//now prep to load the plugin.
+	// view := quick.NewQQuickView(nil)
 	view := quick.NewQQuickViewFromPointer(app.RootObjects()[0].Pointer())
-
-	stackLayout := view.RootObject().FindChild("stackLayout", core.Qt__FindChildrenRecursively)
-
-	mainComponent := qml.NewQQmlComponent2(app, nil)
-	mainComponent.ConnectStatusChanged(func(status qml.QQmlComponent__Status) {
-		if status == qml.QQmlComponent__Ready {
-
-			item := quick.NewQQuickItemFromPointer(mainComponent.Create(app.RootContext()).Pointer()) //create item and "cast" it to QQuickItem
-			app.SetObjectOwnership(item, qml.QQmlEngine__JavaScriptOwnership)
-			item.SetParent(stackLayout) //add invisible item to invisible parent (for auto-deletion ...)
-			item.SetParentItem(view.ContentItem())
-
-		} else {
-			fmt.Println("failed with status:", status)
-			for _, e := range mainComponent.Errors() {
-				fmt.Println("error:", e.ToString())
-			}
-		}
-	})
-
+	// view.SetSource(core.NewQUrl3("./qml/main.qml", 0))
+	// view.Show()
+	//https://stackoverflow.com/questions/31890372/add-objects-to-qml-layout-from-c%5D
 	qmlString := `
-		import QtQuick 2.0
-		Item {
-			id: rootItem
-			anchors.fill: parent
-			Component.onCompleted: {
+	import QtQuick 2.0
+	Rectangle {
+		id: settings
+		anchors.fill: parent
+		width: 200
+		height: 200
+		color: "blue";
+		Component.onCompleted: {
 				var subComponent = Qt.createQmlObject(' \
 				import Settings 1.0; \
 				Settings { \
-					id: settings; \
-					width: parent.width; \
-					height: parent.height;}', rootItem);
-			}
+						width: parent.width; \
+						height: parent.height;}', settings);
+				}
 		}
-	`
-	mainComponent.SetData(core.NewQByteArray2(qmlString, -1), core.NewQUrl())
-	// view.Show()
+		`
+	stackLayout := view.RootObject().FindChild("stackLayout", core.Qt__FindChildrenRecursively)
+	stackLayoutPointer := quick.NewQQuickItemFromPointer(stackLayout.Pointer())
+	mainComponent := qml.NewQQmlComponent2(app, stackLayout)
+	mainComponent.SetData(core.NewQByteArray2(qmlString, -1), core.NewQUrl3("./qml/main.qml", 0))
+	item := quick.NewQQuickItemFromPointer(mainComponent.Create(app.RootContext()).Pointer())
+	app.SetObjectOwnership(item, qml.QQmlEngine__JavaScriptOwnership)
+	item.SetParentItem(stackLayoutPointer)
+	// item := quick.NewQQuickItemFromPointer(mainComponent.Create(app.RootContext()).Pointer()) //create item and "cast" it to QQuickItem
+	// app.SetObjectOwnership(item, qml.QQmlEngine__JavaScriptOwnership)
+	// item.SetParent(stackLayout)
+	// item.SetParentItem(stackLayoutPointer)
+	// mainComponent.ConnectStatusChanged(func(status qml.QQmlComponent__Status) {
+	// 	if status == qml.QQmlComponent__Ready {
+
+	// 		stackLayoutPointer := quick.NewQQuickItemFromPointer(stackLayout.Pointer())
+	// 		item := quick.NewQQuickItemFromPointer(mainComponent.Create(app.RootContext()).Pointer()) //create item and "cast" it to QQuickItem
+	// 		app.SetObjectOwnership(item, qml.QQmlEngine__JavaScriptOwnership)
+	// 		item.SetParent(stackLayout) //add invisible item to invisible parent (for auto-deletion ...)
+	// 		item.SetParentItem(stackLayoutPointer)
+
+	// 	} else {
+	// 		fmt.Println("failed with status:", status)
+	// 		for _, e := range mainComponent.Errors() {
+	// 			fmt.Println("error:", e.ToString())
+	// 		}
+	// 	}
+	// })
+	// mainComponent.SetData(core.NewQByteArray2(qmlString, -1), core.NewQUrl())
 	widgets.QApplication_Exec()
 
 }
