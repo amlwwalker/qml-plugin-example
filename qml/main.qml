@@ -5,7 +5,7 @@ import QtQuick 2.2
 
 import "." as Custom               //needed for name clash with std Controls
 
-import Settings 1.0
+// import Settings 1.0
 
 ApplicationWindow {
   id: app
@@ -33,6 +33,7 @@ ApplicationWindow {
       }
     }
     StackLayout {
+      id: stackLayout
       width: parent.width
       implicitHeight: parent.height - bar.height
       anchors.top: bar.bottom
@@ -56,14 +57,22 @@ ApplicationWindow {
             color: "green"
           }
       }
-      Item {
-        id: settingsTab
-        Settings {
-          id: settings
-          width: parent.width
-          height: parent.height
-        }
-      }
+      // Item {
+      //   id: settingsTab
+      //   Item {
+      //     id: rootItem
+      //     anchors.fill: parent
+
+      //     // Component.onCompleted: {
+      //     //   var subComponent = Qt.createQmlObject(' \
+      //     //   import Settings 1.0; \
+      //     //   Settings { \
+      //     //     id: settings; \
+      //     //     width: parent.width; \
+      //     //     height: parent.height; }', rootItem);
+      //     // }
+      //   }
+      // }
     }
   }
 }

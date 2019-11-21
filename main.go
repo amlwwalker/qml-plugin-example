@@ -7,10 +7,9 @@ import (
 	"sync"
 
 	"github.com/therecipe/qt/core"
-	"github.com/therecipe/qt/widgets"
-
-	// "github.com/therecipe/qt/quick"
 	"github.com/therecipe/qt/qml"
+	"github.com/therecipe/qt/quick"
+	"github.com/therecipe/qt/widgets"
 )
 
 //go:generate cp main.go ./plugin-example-addon
@@ -51,11 +50,53 @@ func main() {
 		}
 		f.(func())()
 	}
+
 	core.QCoreApplication_SetAttribute(core.Qt__AA_EnableHighDpiScaling, true)
 	widgets.NewQApplication(len(os.Args), os.Args)
 	app := qml.NewQQmlApplicationEngine(nil)
+
 	app.AddImportPath("qrc:/qml/")
 	app.Load(core.NewQUrl3("./qml/main.qml", 0))
+
+	//now prep to load the plugin.
+	view := quick.NewQQuickViewFromPointer(app.RootObjects()[0].Pointer())
+
+	stackLayout := view.RootObject().FindChild("stackLayout", core.Qt__FindChildrenRecursively)
+
+	mainComponent := qml.NewQQmlComponent2(app, nil)
+	mainComponent.ConnectStatusChanged(func(status qml.QQmlComponent__Status) {
+		if status == qml.QQmlComponent__Ready {
+
+			item := quick.NewQQuickItemFromPointer(mainComponent.Create(app.RootContext()).Pointer()) //create item and "cast" it to QQuickItem
+			app.SetObjectOwnership(item, qml.QQmlEngine__JavaScriptOwnership)
+			item.SetParent(stackLayout) //add invisible item to invisible parent (for auto-deletion ...)
+			item.SetParentItem(view.ContentItem())
+
+		} else {
+			fmt.Println("failed with status:", status)
+			for _, e := range mainComponent.Errors() {
+				fmt.Println("error:", e.ToString())
+			}
+		}
+	})
+
+	qmlString := `
+		import QtQuick 2.0
+		Item {
+			id: rootItem
+			anchors.fill: parent
+			Component.onCompleted: {
+				var subComponent = Qt.createQmlObject(' \
+				import Settings 1.0; \
+				Settings { \
+					id: settings; \
+					width: parent.width; \
+					height: parent.height;}', rootItem);
+			}
+		}
+	`
+	mainComponent.SetData(core.NewQByteArray2(qmlString, -1), core.NewQUrl())
+	// view.Show()
 	widgets.QApplication_Exec()
 
 }

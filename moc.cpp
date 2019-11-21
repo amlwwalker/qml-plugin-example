@@ -17,6 +17,7 @@
 #include <QOffscreenSurface>
 #include <QPaintDeviceWindow>
 #include <QPdfWriter>
+#include <QQuickItem>
 #include <QString>
 #include <QTimerEvent>
 #include <QWidget>
@@ -176,6 +177,8 @@ void* Controller283f7e_NewController(void* parent)
 		return new Controller283f7e(static_cast<QPaintDeviceWindow*>(parent));
 	} else if (dynamic_cast<QPdfWriter*>(static_cast<QObject*>(parent))) {
 		return new Controller283f7e(static_cast<QPdfWriter*>(parent));
+	} else if (dynamic_cast<QQuickItem*>(static_cast<QObject*>(parent))) {
+		return new Controller283f7e(static_cast<QQuickItem*>(parent));
 	} else if (dynamic_cast<QWidget*>(static_cast<QObject*>(parent))) {
 		return new Controller283f7e(static_cast<QWidget*>(parent));
 	} else if (dynamic_cast<QWindow*>(static_cast<QObject*>(parent))) {
