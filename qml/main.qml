@@ -14,7 +14,50 @@ ApplicationWindow {
   minimumWidth: 800; minimumHeight: 768
   Rectangle {
     anchors.fill: parent
-    id: stackLayout
-    objectName: "stackLayout"
+    TabBar {
+      id: bar
+      Layout.fillWidth: true
+      Layout.fillHeight: true      
+      width: parent.width
+      background: Rectangle {
+          color: "transparent"
+      }
+      TabButton {
+          text: qsTr("Calendar")
+      }
+      TabButton {
+          text: qsTr("Listing")
+      }
+      TabButton {
+          text: qsTr("Settings")
+      }
+    }
+    StackLayout {
+      id: stackLayout
+      objectName: "stackLayout"
+      width: parent.width
+      implicitHeight: parent.height - bar.height
+      anchors.top: bar.bottom
+      
+      currentIndex: bar.currentIndex
+      Item {
+          id: calendarTab
+          Rectangle { 
+            id: calendar 
+            width: parent.width
+            height: parent.height
+            color: "red"
+          }
+      }
+      Item {
+        id: listingTab
+          Rectangle {
+            id: listing
+            width: parent.width
+            height: parent.height
+            color: "green"
+          }
+      }
+    }
   }
 }
