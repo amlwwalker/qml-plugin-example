@@ -16,6 +16,7 @@ ApplicationWindow {
     anchors.fill: parent
     TabBar {
       id: bar
+      objectName: "tabBar"
       Layout.fillWidth: true
       Layout.fillHeight: true      
       width: parent.width
@@ -27,9 +28,6 @@ ApplicationWindow {
       }
       TabButton {
           text: qsTr("Listing")
-      }
-      TabButton {
-          text: qsTr("Settings")
       }
     }
     StackLayout {

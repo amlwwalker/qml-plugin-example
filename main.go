@@ -1,9 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"sync"
-	"fmt"
+
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/qml"
 	"github.com/therecipe/qt/widgets"
@@ -37,7 +38,6 @@ func Instance() *Controller {
 }
 
 func main() {
-	plugin := loadAPlugin("plugin-example-addon/plugin.so")
 	core.QCoreApplication_SetAttribute(core.Qt__AA_EnableHighDpiScaling, true)
 	widgets.NewQApplication(len(os.Args), os.Args)
 	app := qml.NewQQmlApplicationEngine(nil)
@@ -45,7 +45,10 @@ func main() {
 	app.AddImportPath("qrc:/qml/")
 	app.Load(core.NewQUrl3("./qml/main.qml", 0))
 
-	if err := addToGui(plugin, app); err != nil {
+	p := &PluginManager{app}
+	plugin := InitialisePlugin("plugin-example-addon/plugin.so")
+
+	if err := p.InitialisePlugin(plugin); err != nil {
 		fmt.Println("error adding to gui ", err)
 	}
 
