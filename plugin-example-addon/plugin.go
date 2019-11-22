@@ -6,42 +6,20 @@ import (
 	_ "github.com/amlwwalker/example-qml/qml-plugin-example/plugin-example-addon/settings"
 )
 
+var Plugin GuiPlugin
+
+type GuiPlugin struct {
+}
+
 //this function is not needed, but it's still usefull for testing
-func Init() {
+func (c GuiPlugin) Init() {
 	fmt.Println("loaded plugin example")
-	// 	widgets.NewQApplication(len(os.Args), os.Args)
+}
 
-	// 	var view = quick.NewQQuickView(nil)
-	// 	view.Engine().AddImportPath("qrc:/qml")
-	// 	view.SetResizeMode(quick.QQuickView__SizeRootObjectToView)
-	// 	var mainComponent = qml.NewQQmlComponent2(view.Engine(), nil)
-	// 	mainComponent.ConnectStatusChanged(func(status qml.QQmlComponent__Status) {
-	// 		if status == qml.QQmlComponent__Ready {
+func (c GuiPlugin) Description() string {
+	return "this plugin displays the settings for the application"
+}
 
-	// 			var item = quick.NewQQuickItemFromPointer(mainComponent.Create(view.RootContext()).Pointer()) //create item and "cast" it to QQuickItem
-	// 			item.SetParent(view)                                                                          //add invisible item to invisible parent (for auto-deletion ...)
-	// 			item.SetParentItem(view.ContentItem())                                                        //add visible item to visible parent
-
-	// 		} else {
-	// 			fmt.Println("failed with status:", status)
-	// 			for _, e := range mainComponent.Errors() {
-	// 				fmt.Println("error:", e.ToString())
-	// 			}
-	// 		}
-	// 	})
-
-	// 	qmlString := `
-	// import QtQuick 2.0
-	// import Settings 1.0
-
-	// Settings {
-	// 	anchors.fill: parent
-	// }
-	// `
-
-	// 	mainComponent.SetData(core.NewQByteArray2(qmlString, -1), core.NewQUrl())
-
-	// 	view.Show()
-
-	// 	widgets.QApplication_Exec()
+func (c GuiPlugin) Name() string {
+	return "Settings"
 }

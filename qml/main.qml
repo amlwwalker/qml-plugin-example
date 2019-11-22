@@ -47,6 +47,9 @@ ApplicationWindow {
             width: parent.width
             height: parent.height
             color: "red"
+            Text {
+              text: "calendar"
+            }
           }
       }
       Item {
@@ -56,6 +59,9 @@ ApplicationWindow {
             width: parent.width
             height: parent.height
             color: "green"
+            Text {
+              text: "listing"
+            }
           }
       }
     }
