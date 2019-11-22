@@ -60,18 +60,15 @@ func main() {
 
 	//now prep to load the plugin.
 	// view := quick.NewQQuickView(nil)
-	view := quick.NewQQuickViewFromPointer(app.RootObjects()[0].Pointer())
+	// view := quick.NewQQuickViewFromPointer(app.RootObjects()[0].Pointer())
 	// view.SetSource(core.NewQUrl3("./qml/main.qml", 0))
 	// view.Show()
 	//https://stackoverflow.com/questions/31890372/add-objects-to-qml-layout-from-c%5D
 	qmlString := `
 	import QtQuick 2.0
-	Rectangle {
+	Item {
 		id: settings
 		anchors.fill: parent
-		width: 200
-		height: 200
-		color: "blue";
 		Component.onCompleted: {
 				var subComponent = Qt.createQmlObject(' \
 				import Settings 1.0; \
@@ -81,13 +78,14 @@ func main() {
 				}
 		}
 		`
-	stackLayout := view.RootObject().FindChild("stackLayout", core.Qt__FindChildrenRecursively)
+	stackLayout := app.RootObjects()[0].FindChild("stackLayout", core.Qt__FindChildrenRecursively)
 	stackLayoutPointer := quick.NewQQuickItemFromPointer(stackLayout.Pointer())
 	mainComponent := qml.NewQQmlComponent2(app, stackLayout)
-	mainComponent.SetData(core.NewQByteArray2(qmlString, -1), core.NewQUrl3("./qml/main.qml", 0))
+	mainComponent.SetData(core.NewQByteArray2(qmlString, -1), core.NewQUrl())
 	item := quick.NewQQuickItemFromPointer(mainComponent.Create(app.RootContext()).Pointer())
 	app.SetObjectOwnership(item, qml.QQmlEngine__JavaScriptOwnership)
 	item.SetParentItem(stackLayoutPointer)
+	mainComponent.CompleteCreate()
 	// item := quick.NewQQuickItemFromPointer(mainComponent.Create(app.RootContext()).Pointer()) //create item and "cast" it to QQuickItem
 	// app.SetObjectOwnership(item, qml.QQmlEngine__JavaScriptOwnership)
 	// item.SetParent(stackLayout)

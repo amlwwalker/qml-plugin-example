@@ -15,6 +15,6 @@ ApplicationWindow {
   Rectangle {
     anchors.fill: parent
     id: stackLayout
-    objectName: "stackLayout"
+    // objectName: "stackLayout"
   }
 }
