@@ -46,7 +46,7 @@ func (p *PluginManager) Init(engine *qml.QQmlApplicationEngine) {
 const viewTemplate = `
 import {{.Name}} 1.0;
 {{.Name}} {
-	anchors.fill: parent
+	// anchors.fill: parent
 }
 `
 const tabTemplate = `

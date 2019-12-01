@@ -30,7 +30,7 @@ ApplicationWindow {
           text: qsTr("Listing")
       }
     }
-    StackLayout {
+    SwipeView {
       id: stackLayout
       objectName: "stackLayout"
       width: parent.width
@@ -62,6 +62,7 @@ ApplicationWindow {
             }
           }
       }
+      function addToStackLayout(item){stackLayout.addItem(item);}
     }
   }
 }
