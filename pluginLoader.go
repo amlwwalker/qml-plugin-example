@@ -163,7 +163,13 @@ func (p *PluginManager) addToGui(childElement, qmlString string) error {
 	item := quick.NewQQuickItemFromPointer(mainComponent.Create(p.engine.RootContext()).Pointer())
 	p.engine.SetObjectOwnership(item, qml.QQmlEngine__JavaScriptOwnership)
 	// //specify the parent
-	item.SetParent(stackLayout)
-	item.SetParentItem(stackLayoutPointer)
+	// item.SetParent(stackLayout)
+	// item.SetParentItem(stackLayoutPointer)
+	if childElement == "stackLayout" {
+		stackLayout.InvokeMethod("addToStackLayout", core.NewQVariant1(item))
+	} else {
+		item.SetParent(stackLayout)
+		item.SetParentItem(stackLayoutPointer)
+	}
 	return nil
 }
